@@ -1,0 +1,19 @@
+{
+    "name": "anagramik/laravel-swiftdil-api",
+    "description": "This is a simple laravel wrapper for SwiftDil API calls",
+    "authors": [
+        {
+            "name": "Aleksandar Radivojevic",
+            "email": "anagramik@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "5.*",
+        "guzzlehttp/guzzle": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "DogeDev\\SwiftDil\\": "src/"
+        }
+    }
+}
