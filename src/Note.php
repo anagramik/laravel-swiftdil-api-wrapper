@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Note
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -24,16 +23,25 @@ class Note
      * Creates a new note object.
      *
      * @param $customerId
+     * @param $data
      *
      * @return mixed
      */
-    public function create($customerId, $text)
+    public function create($customerId, $data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes", [
-            'form_params' => [
-                'text' => $text,
-            ],
-        ]);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => $data
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -47,20 +55,43 @@ class Note
      */
     public function get($customerId, $noteId)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId");
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
      * Lists all existing notes associated with a given customer.
      * The notes are returned sorted by creation date, with the most recent notes appearing first.
+     **
      *
      * @param $customerId
      *
+     * @note optinal params ?page=0&size=2&sort=column_name,DESC
+     *
      * @return mixed
      */
-    public function getAll($customerId, $noteId)
+    public function getAll($customerId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/notes");
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -69,17 +100,25 @@ class Note
      *
      * @param $customerId
      * @param $noteId
-     * @param $text
+     * @param $data
      *
      * @return mixed
      */
-    public function update($customerId, $noteId, $text)
+    public function update($customerId, $noteId, $data)
     {
-        return $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
-            'form_paras' => [
-                'text' => $text
-            ]
-        ]);
+        try {
+            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => $data
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -93,6 +132,16 @@ class Note
      */
     public function delete($customerId, $noteId)
     {
-        return $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId");
+        try {
+            $response = $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

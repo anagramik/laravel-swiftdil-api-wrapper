@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Association
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -33,7 +32,17 @@ class Association
      */
     public function get($customerId, $screeningId, $matchId, $associationId)
     {
-        return $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations/$associationId");
+        try {
+            $response = $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations/$associationId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -48,6 +57,15 @@ class Association
      */
     public function getAll($customerId, $screeningId, $matchId)
     {
-        return $this->client->request('GET', "/customers/$customerId/screenings/$screeningId//matches/$matchId/associations");
+        try {
+            $response = $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+        return json_decode($response->getBody()->getContents());
     }
 }

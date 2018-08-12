@@ -7,21 +7,21 @@ use GuzzleHttp\Client;
 class Report
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
     /**
-     * Each report type is associated with its own set of parameters, passed in a key-value format:
+     * Retrieves the details of an existing report.
+     * You need to supply the unique report identifier.
      *
      * @param $reportId
      *
@@ -29,22 +29,45 @@ class Report
      */
     public function get($reportId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/reports/$reportId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/reports/$reportId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
      * Lists all existing reports.
-     * The reports are returned sorted by creation date, with the most recent reports appearing first
+     * The reports are returned sorted by creation date, with the most recent reports appearing first.
+     *
+     * @note optinal params ?page=0&size=2&sort=column_name,DESC
      *
      * @return mixed
      */
     public function getAll()
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/reports");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/reports", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
-     * Each report type is associated with its own set of parameters, passed in a key-value format:
+     * Downloads a report document.
+     * You need to supply the unique report identifier and extension.
      *
      * @param $reportId
      * @param $extension
@@ -53,6 +76,16 @@ class Report
      */
     public function download($reportId, $extension)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/reports/$reportId/$extension/download");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/reports/$reportId/$extension/download", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

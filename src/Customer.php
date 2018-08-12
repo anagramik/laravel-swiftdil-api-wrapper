@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Customer
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -28,7 +27,17 @@ class Customer
      */
     public function getAll()
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -41,7 +50,17 @@ class Customer
      */
     public function get($clientId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$clientId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$clientId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -53,7 +72,20 @@ class Customer
      */
     public function create($data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . '/customers', $data);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . '/customers', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json'    => $data,
+            ]);
+
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -68,7 +100,19 @@ class Customer
      */
     public function update($clientId, $data)
     {
-        return $this->client->request('PUT', env('SWIFTDIL_URL') ."/customers/$clientId", $data);
+        try {
+            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$clientId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json'    => $data,
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -82,6 +126,16 @@ class Customer
      */
     public function delete($clientId)
     {
-        return $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$clientId");
+        try {
+            $response = $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$clientId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class DocumentVerification
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -29,12 +28,21 @@ class DocumentVerification
      */
     public function create($customerId, $data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/verifications", [
-            'form_params' => [
-                'document_id' => $data['document_id'],
-                'type'        => $data['type'],
-            ],
-        ]);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/verifications", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'json'    => [
+                    'document_id' => $data['document_id'],
+                    'type'        => $data['type'],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -48,7 +56,17 @@ class DocumentVerification
      */
     public function get($customerId, $verificationId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications/$verificationId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications/$verificationId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -61,6 +79,16 @@ class DocumentVerification
      */
     public function getAll($customerId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications" . [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

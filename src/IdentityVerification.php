@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class IdentityVerification
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -29,12 +28,21 @@ class IdentityVerification
      */
     public function create($customerId, $data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/identifications", [
-            'form_params' => [
-                'document_id' => $data['document_id'],
-                'selfie'      => $data['image'],
-            ],
-        ]);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/identifications", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'json'    => [
+                    'document_id' => $data['document_id'],
+                    'selfie'      => base64_encode($data['image']),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -48,7 +56,17 @@ class IdentityVerification
      */
     public function get($customerId, $identificationId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/identifications/$identificationId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/identifications/$identificationId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -61,6 +79,16 @@ class IdentityVerification
      */
     public function getAll($customerId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/identifications");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/identifications", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

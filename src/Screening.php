@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Screening
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -30,9 +29,19 @@ class Screening
      */
     public function create($customerId, $data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings", [
-            'form_params' => $data
-        ]);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json'    => $data,
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -46,7 +55,17 @@ class Screening
      */
     public function get($customerId, $screeningId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/screeningId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -59,7 +78,17 @@ class Screening
      */
     public function getAll($customerId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -72,6 +101,18 @@ class Screening
      */
     public function search($data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/search/screenings", $data);
+        try {
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/search/screenings", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => $data
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

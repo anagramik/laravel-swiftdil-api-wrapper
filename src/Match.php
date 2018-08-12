@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Match
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -32,7 +31,17 @@ class Match
      */
     public function get($customerId, $screeningId, $matchId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches/$matchId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches/$matchId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -46,7 +55,17 @@ class Match
      */
     public function getAll($customerId, $screeningId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches");
+        try {
+            $response = $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -61,7 +80,43 @@ class Match
      */
     public function confirmAMatch($customerId, $screeningId, $matchId)
     {
-        return $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm");
+        try {
+            $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    /**
+     * Dismisses a customer match.
+     * You need to supply the unique customer, screening and match identifiers.
+     *
+     * @param $customerId
+     * @param $screeningId
+     * @param $matchIds
+     *
+     * @return mixed
+     */
+    public function confirmMultipleMatches($customerId, $screeningId, $matchIds)
+    {
+        try {
+            $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/confirm", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'json' => $matchIds
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -74,33 +129,24 @@ class Match
      *
      * @return mixed
      */
-    public function confirmMultipleMatches($customerId, $screeningId, $matchId)
+    public function dismissAMatch($customerId, $screeningId, $matchId)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm");
-    }
+        try {
+            $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/$matchId/dismiss", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
 
-    /**
-     * Bulk confirms multiple customer matches.
-     * You need to supply the unique customer, screening and match identifier.
-     *
-     * @param $customerId
-     * @param $screeningId
-     * @param $matchIds
-     *
-     * @return mixed
-     */
-    public function dismissAMatch($customerId, $screeningId, $matchIds)
-    {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches/confirm",[
-            'form_params' => [
-                'match_ids' => $matchIds
-            ]
-        ]);
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
      * Bulk dismisses multiple customer matches.
-     * You need to supply the unique customer, screening and match identifier.
+     * You need to supply the unique customer, screening and match identifiers.
      *
      * @param $customerId
      * @param $screeningId
@@ -110,10 +156,17 @@ class Match
      */
     public function dismissMultipleAMatch($customerId, $screeningId, $matchIds)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId/matches/dismiss",[
-            'form_params' => [
-                'match_ids' => $matchIds
-            ]
-        ]);
+        try {
+            $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/dismiss", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'json' => $matchIds
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

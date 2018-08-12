@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class RiskProfile
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -29,6 +28,17 @@ class RiskProfile
      */
     public function getCustomerRiskProfile($clientId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$clientId/risk_profile");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$clientId/risk_profile", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 }

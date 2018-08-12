@@ -7,16 +7,15 @@ use GuzzleHttp\Client;
 class Document
 {
     protected $client;
+    protected $token;
 
     public function __construct($token)
     {
+        $this->token  = $token;
+        $this->token  = $token;
         $this->client = new Client([
             'base_uri' => env('SWIFTDIL_URL'),
             'timeout'  => 2.0,
-            'headers'  => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-            ],
         ]);
     }
 
@@ -30,7 +29,17 @@ class Document
      */
     public function getAll($customerId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -44,7 +53,17 @@ class Document
      */
     public function get($customerId, $documentId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -86,7 +105,17 @@ class Document
      */
     public function download($customerId, $documentId)
     {
-        return $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId/download");
+        try {
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId/download", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
+
+        return json_decode($response->getBody()->getContents());
     }
 
     /**
@@ -104,20 +133,15 @@ class Document
      */
     public function update($customerId, $documentId, $data)
     {
-        return $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId", [
-            'form_params' => [
-                'front_side'           => $data['front_side'],
-                'back_side'            => $data['back_side'],
-                'type'                 => $data['type'],
-                'document_name'        => $data['document_name'],
-                'document_description' => $data['document_description'],
-                'document_number'      => $data['document_number'],
-                'issuing_country'      => $data['issuing_country'],
-                'issue_date'           => $data['issue_date'],
-                'expiry_date'          => $data['expiry_date'],
-                'mrz_line1'            => $data['mrz_line1'],
-                'mrz_line2'            => $data['mrz_line2'],
-            ],
-        ]);
+        try {
+            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'json' => $data
+            ]);
+        } catch (\Exception $e) {
+            $response = $e;
+        }
     }
 }
