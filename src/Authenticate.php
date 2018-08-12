@@ -47,7 +47,7 @@ class Authenticate
             // Unauthorized	Invalid authorisation credentials.
             if ($code == 401 && \Cache::get('refresh_token')) {
 
-                return $this->refreshToken()) {
+                return ($this->refreshToken()) {
                     return $this->getToken();
                 }
             }
