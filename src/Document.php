@@ -71,27 +71,19 @@ class Document
      * as part of the document creation. attachments must be uploaded as a
      * multi-part form and the file size must not exceed 5MB.
      *
-     * @param $data
      * @param $customerId
+     * @param $data
      *
      * @return mixed
      */
-    public function create($data, $customerId)
+    public function createAndUpload($customerId, $data)
     {
         return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/documents", [
-            'form_params' => [
-                'front_side'           => $data['front_side'],
-                'back_side'            => $data['back_side'],
-                'type'                 => $data['type'],
-                'document_name'        => $data['document_name'],
-                'document_description' => $data['document_description'],
-                'document_number'      => $data['document_number'],
-                'issuing_country'      => $data['issuing_country'],
-                'issue_date'           => $data['issue_date'],
-                'expiry_date'          => $data['expiry_date'],
-                'mrz_line1'            => $data['mrz_line1'],
-                'mrz_line2'            => $data['mrz_line2'],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type'  => 'application/json',
             ],
+            'json' => $data
         ]);
     }
 
@@ -100,13 +92,14 @@ class Document
      *
      * @param $customerId
      * @param $documentId
+     * @param $side // front or back
      *
      * @return mixed
      */
-    public function download($customerId, $documentId)
+    public function download($customerId, $documentId, $side = '')
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId/download", [
+            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId/download" . (($side !== '') ? '?side='.$side : ''), [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

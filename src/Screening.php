@@ -102,12 +102,10 @@ class Screening
     public function search($data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/search/screenings", [
+            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/search/screenings?$data", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
-                    'Content-Type'  => 'application/json',
                 ],
-                'json' => $data
             ]);
         } catch (\Exception $e) {
             $response = $e;

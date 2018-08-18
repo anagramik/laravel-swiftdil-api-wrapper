@@ -23,6 +23,7 @@ class IdentityVerification
      * Creates a new identity verification object.
      *
      * @param $customerId
+     * @param $data
      *
      * @return mixed
      */
@@ -33,10 +34,7 @@ class IdentityVerification
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
-                'json'    => [
-                    'document_id' => $data['document_id'],
-                    'selfie'      => base64_encode($data['image']),
-                ],
+                'json'    => $data
             ]);
         } catch (\Exception $e) {
             $response = $e;

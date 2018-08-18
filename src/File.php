@@ -105,12 +105,7 @@ class File
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json'    => [
-                    "content_type" => $data['type'],
-                    "filename"     => $data['filename'],
-                    "size"         => $data['size'],
-                    "content"      => base64_encode($data['image']),
-                ],
+                'json'    => $data
             ]);
         } catch (\Exception $e) {
             $response = $e;

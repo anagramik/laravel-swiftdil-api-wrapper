@@ -33,10 +33,7 @@ class DocumentVerification
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
-                'json'    => [
-                    'document_id' => $data['document_id'],
-                    'type'        => $data['type'],
-                ],
+                'json'    => $data,
             ]);
         } catch (\Exception $e) {
             $response = $e;
@@ -81,10 +78,10 @@ class DocumentVerification
     {
         try {
             $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications" . [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ]
-            ]);
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token,
+                    ],
+                ]);
         } catch (\Exception $e) {
             $response = $e;
         }

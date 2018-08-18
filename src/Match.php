@@ -78,7 +78,7 @@ class Match
      *
      * @return mixed
      */
-    public function confirmAMatch($customerId, $screeningId, $matchId)
+    public function confirm($customerId, $screeningId, $matchId)
     {
         try {
             $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm", [
@@ -103,7 +103,7 @@ class Match
      *
      * @return mixed
      */
-    public function confirmMultipleMatches($customerId, $screeningId, $matchIds)
+    public function confirmMultiple($customerId, $screeningId, $matchIds)
     {
         try {
             $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/confirm", [
@@ -129,7 +129,7 @@ class Match
      *
      * @return mixed
      */
-    public function dismissAMatch($customerId, $screeningId, $matchId)
+    public function dismiss($customerId, $screeningId, $matchId)
     {
         try {
             $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/$matchId/dismiss", [
@@ -154,7 +154,7 @@ class Match
      *
      * @return mixed
      */
-    public function dismissMultipleAMatch($customerId, $screeningId, $matchIds)
+    public function dismissMultiple($customerId, $screeningId, $matchIds)
     {
         try {
             $response = $this->client->request('POST', "/customers/$customerId/screenings/$screeningId/matches/dismiss", [
