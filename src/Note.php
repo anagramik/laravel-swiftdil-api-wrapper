@@ -35,7 +35,9 @@ class Note
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json' => $data
+                'json' => [
+                    'text' => $data
+                ]
             ]);
         } catch (\Exception $e) {
             $response = $e;
@@ -112,7 +114,9 @@ class Note
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json' => $data
+                'json' => [
+                    'text' => $data
+                ]
             ]);
         } catch (\Exception $e) {
             $response = $e;

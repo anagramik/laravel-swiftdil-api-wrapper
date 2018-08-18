@@ -2196,11 +2196,8 @@ ATTRIBUTES
 *Example Request:*
 
 ```php
-$data = [
-    "text" => "A useful note about John Doe"
-];
 
-(new SwiftDilAPI())->Note()->create($customerId, $data);
+(new SwiftDilAPI())->Note()->create($customerId, "A useful note about John Doe");
 ```
 
 *Example Response:*
@@ -2248,17 +2245,13 @@ ATTRIBUTES
 
 - **customer_id** required
 - **note_id** required
-- **text** 
+- **text**  string
 
  
 *Example Request:*
 
 ```php
-$data = [
-    "text" => "A useful note about John Doe"
-];
-
-(new SwiftDilAPI())->Note()->update($customerId, $noteId, $data);
+(new SwiftDilAPI())->Note()->update($customerId, $noteId, $text);
 ```
 
 *Example Response:*
