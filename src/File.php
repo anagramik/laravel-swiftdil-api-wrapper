@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class File
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -30,7 +31,7 @@ class File
     public function create($fileId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/files/$fileId", [
+            $response = $this->client->request('GET', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -51,7 +52,7 @@ class File
     public function getAll()
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/files", [
+            $response = $this->client->request('GET', $this->url . "/files", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -75,7 +76,7 @@ class File
     public function download($fileId, $type)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/files/$fileId?output=$type", [
+            $response = $this->client->request('GET', $this->url . "/files/$fileId?output=$type", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -100,12 +101,12 @@ class File
     public function update($fileId, $data)
     {
         try {
-            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/files/$fileId", [
+            $response = $this->client->request('PUT', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json'    => $data
+                'json'    => $data,
             ]);
         } catch (\Exception $e) {
             $response = $e;
@@ -127,7 +128,7 @@ class File
     public function delete($fileId)
     {
         try {
-            $response = $this->client->request('DELETE', env('SWIFTDIL_URL') . "/files/$fileId", [
+            $response = $this->client->request('DELETE', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

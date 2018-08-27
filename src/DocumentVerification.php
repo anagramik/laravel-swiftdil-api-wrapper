@@ -8,13 +8,14 @@ class DocumentVerification
 {
     protected $client;
     protected $token;
+    protected $url;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -29,7 +30,7 @@ class DocumentVerification
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/verifications", [
+            $response = $this->client->request('POST', $this->url . "/customers/$customerId/verifications", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -54,7 +55,7 @@ class DocumentVerification
     public function get($customerId, $verificationId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications/$verificationId", [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/verifications/$verificationId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -77,7 +78,7 @@ class DocumentVerification
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/verifications" . [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/verifications" . [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->token,
                     ],

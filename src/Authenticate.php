@@ -6,19 +6,22 @@ use GuzzleHttp\Client;
 
 class Authenticate
 {
-    /** @var \GuzzleHttp\Client  */
+    /** @var \GuzzleHttp\Client */
     protected $client;
+    protected $url;
 
-    public function __construct()
+    public function __construct($clientId, $clientSecret, $url)
     {
         $this->client = new Client([
-            'auth' => [
-                env('SWIFTDIL_CLIENT_ID'), env('SWIFTDIL_CLIENT_SECRET')
+            'auth'    => [
+                $clientId, $clientSecret,
             ],
             'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ]
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
         ]);
+
+        $this->url = $url;
     }
 
     public function getToken()
@@ -29,10 +32,10 @@ class Authenticate
 
         try {
 
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . '/oauth2/token');
+            $response = $this->client->request('POST', $this->url . '/oauth2/token');
             $response = json_decode($response->getBody()->getContents());
 
-            $accessTokenExpiresAt = now()->addSeconds($response->expires_in);
+            $accessTokenExpiresAt  = now()->addSeconds($response->expires_in);
             $refreshTokenExpiresAt = now()->addSeconds($response->refresh_expires_in);
 
             \Cache::put('access_token', $response->access_token, $accessTokenExpiresAt);
@@ -78,15 +81,15 @@ class Authenticate
 
             $args = [
                 'headers'     => [
-                    'Content-Type' => 'application/x-www-form-urlencoded'
+                    'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
                 'form_params' => [
                     'grant_type'    => 'refresh_token',
-                    'refresh_token' =>  \Cache::get('refresh_token'),
+                    'refresh_token' => \Cache::get('refresh_token'),
                 ],
             ];
 
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . '/oauth2/token', $args);
+            $response = $this->client->request('POST', $this->url . '/oauth2/token', $args);
 
         } catch (\Exception $e) {
 
@@ -98,7 +101,7 @@ class Authenticate
 
         $response = json_decode($response->getBody()->getContents());
 
-        $accessTokenExpiresAt = now()->addSeconds($response->expires_in);
+        $accessTokenExpiresAt  = now()->addSeconds($response->expires_in);
         $refreshTokenExpiresAt = now()->addSeconds($response->refresh_expires_in);
 
         \Cache::put('access_token', $response->access_token, $accessTokenExpiresAt);

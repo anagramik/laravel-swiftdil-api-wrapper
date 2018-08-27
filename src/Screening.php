@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class Screening
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -30,7 +31,7 @@ class Screening
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/screenings", [
+            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -56,7 +57,7 @@ class Screening
     public function get($customerId, $screeningId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings/$screeningId", [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -79,7 +80,7 @@ class Screening
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/screenings", [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -102,7 +103,7 @@ class Screening
     public function search($data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/search/screenings?$data", [
+            $response = $this->client->request('POST', $this->url . "/search/screenings?$data", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

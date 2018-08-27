@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class Customer
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -28,7 +29,7 @@ class Customer
     public function getAll()
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers", [
+            $response = $this->client->request('GET', $this->url . "/customers", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -51,7 +52,7 @@ class Customer
     public function get($clientId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$clientId", [
+            $response = $this->client->request('GET', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -73,7 +74,7 @@ class Customer
     public function create($data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . '/customers', [
+            $response = $this->client->request('POST', $this->url . '/customers', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -101,7 +102,7 @@ class Customer
     public function update($clientId, $data)
     {
         try {
-            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$clientId", [
+            $response = $this->client->request('PUT', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -127,7 +128,7 @@ class Customer
     public function delete($clientId)
     {
         try {
-            $response = $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$clientId", [
+            $response = $this->client->request('DELETE', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

@@ -1,6 +1,6 @@
 {
     "name": "anagramik/laravel-swiftdil-api",
-    "description": "This is a simple laravel wrapper for SwiftDil API calls",
+    "description": "This is a simple php wrapper for SwiftDil API calls",
     "authors": [
         {
             "name": "Aleksandar Radivojevic",
@@ -8,7 +8,6 @@
         }
     ],
     "require": {
-        "laravel/framework": "5.*",
         "guzzlehttp/guzzle": "*"
     },
     "autoload": {

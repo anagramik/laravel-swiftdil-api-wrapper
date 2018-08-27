@@ -1,10 +1,30 @@
-## SETUP
-ADD THIS TO YOUR `.env` file
+## Example
+```php
+<?php
 
-```
-SWIFTDIL_CLIENT_ID={client-id}
-SWIFTDIL_CLIENT_SECRET={client-secret}
-SWIFTDIL_URL={https://sandbox.swiftdil.com/v1} or {https://api.swiftdil.com/v1} 
+use DogeDev\SwiftDil\SwiftDilAPI;
+
+class Example 
+{
+    //{client-id}
+    protected $clientId; 
+    //{client-secret}
+    protected $clientSecret; 
+    // {https://sandbox.swiftdil.com/v1} or {https://api.swiftdil.com/v1}
+    protected $url;
+    
+    public function __construct($clientId, $clientSecret, $url) 
+    {
+        $this->url          = $url;    
+        $this->clientId     = $clientId; 
+        $this->clientSecret = $clientSecret; 
+    }
+    
+    public function getItAll()
+    {
+        return (new SwiftDilAPI($this->clientId, $this->clientSecret, $this->url))->Customer()->getAll();        
+    }   
+}
 ```
 
 ## List of entities and methods
@@ -211,7 +231,7 @@ $data = [
     ]
 ]
 
-(new SwiftdilAPI())->Customer()->create($data);
+(new SwiftDilAPI())->Customer()->create($data);
 ```
 
 *Example Response*
@@ -256,7 +276,7 @@ ATTRIBUTES
 *Example Request:*
 
 ```php
-(new SwiftdilAPI())->Customer()->get($customerId);
+(new SwiftDilAPI())->Customer()->get($customerId);
 ```
 
 *Example Response:*
@@ -328,7 +348,7 @@ $data = [
     ],
 ]
 
-(new SwiftdilAPI())->Customer()->update($customerId, $data);
+(new SwiftDilAPI())->Customer()->update($customerId, $data);
 ```
 
 *Example Response:*

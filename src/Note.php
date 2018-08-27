@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class Note
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -30,14 +31,14 @@ class Note
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes", [
+            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json' => [
-                    'text' => $data
-                ]
+                'json'    => [
+                    'text' => $data,
+                ],
             ]);
         } catch (\Exception $e) {
             $response = $e;
@@ -58,7 +59,7 @@ class Note
     public function get($customerId, $noteId)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -84,7 +85,7 @@ class Note
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/notes", [
+            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -109,14 +110,14 @@ class Note
     public function update($customerId, $noteId, $data)
     {
         try {
-            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+            $response = $this->client->request('PUT', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
                 ],
-                'json' => [
-                    'text' => $data
-                ]
+                'json'    => [
+                    'text' => $data,
+                ],
             ]);
         } catch (\Exception $e) {
             $response = $e;
@@ -137,7 +138,7 @@ class Note
     public function delete($customerId, $noteId)
     {
         try {
-            $response = $this->client->request('DELETE', env('SWIFTDIL_URL') . "/customers/$customerId/notes/$noteId", [
+            $response = $this->client->request('DELETE', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

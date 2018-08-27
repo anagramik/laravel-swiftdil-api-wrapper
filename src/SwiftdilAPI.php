@@ -2,13 +2,15 @@
 
 namespace DogeDev\SwiftDil;
 
-class SwiftdilAPI
+class SwiftDilAPI
 {
-    private $token;
+    protected $token;
+    protected $url;
 
-    public function __construct()
+    public function __construct($clientId, $clientSecret, $url)
     {
-        return $this->token = (new Authenticate())->getToken();
+        $this->token = (new Authenticate($clientId, $clientSecret, $url))->getToken();
+        $this->url = $url;
     }
 
     /**
@@ -18,7 +20,7 @@ class SwiftdilAPI
      */
     public function Association()
     {
-        return new Association($this->token);
+        return new Association($this->url, $this->token);
     }
 
     /**
@@ -28,7 +30,7 @@ class SwiftdilAPI
      */
     public function Customer()
     {
-        return new Customer($this->token);
+        return new Customer($this->url, $this->token);
     }
 
     /**
@@ -38,7 +40,7 @@ class SwiftdilAPI
      */
     public function Document()
     {
-        return new Document($this->token);
+        return new Document($this->url, $this->token);
     }
 
     /**
@@ -48,7 +50,7 @@ class SwiftdilAPI
      */
     public function DocumentVerification()
     {
-        return new DocumentVerification($this->token);
+        return new DocumentVerification($this->url, $this->token);
     }
 
     /**
@@ -58,7 +60,7 @@ class SwiftdilAPI
      */
     public function File()
     {
-        return new File($this->token);
+        return new File($this->url, $this->token);
     }
 
     /**
@@ -68,7 +70,7 @@ class SwiftdilAPI
      */
     public function IdentityVerification()
     {
-        return new IdentityVerification($this->token);
+        return new IdentityVerification($this->url, $this->token);
     }
 
     /**
@@ -78,7 +80,7 @@ class SwiftdilAPI
      */
     public function Match()
     {
-        return new Match($this->token);
+        return new Match($this->url, $this->token);
     }
 
     /**
@@ -88,7 +90,7 @@ class SwiftdilAPI
      */
     public function Note()
     {
-        return new Note($this->token);
+        return new Note($this->url, $this->token);
     }
 
     /**
@@ -98,7 +100,7 @@ class SwiftdilAPI
      */
     public function Report()
     {
-        return new Report($this->token);
+        return new Report($this->url, $this->token);
     }
 
     /**
@@ -108,7 +110,7 @@ class SwiftdilAPI
      */
     public function RiskProfile()
     {
-        return new RiskProfile($this->token);
+        return new RiskProfile($this->url, $this->token);
     }
 
     /**
@@ -118,6 +120,6 @@ class SwiftdilAPI
      */
     public function Screening()
     {
-        return new Screening($this->token);
+        return new Screening($this->url, $this->token);
     }
 }

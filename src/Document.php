@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class Document
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $this->url,
             'timeout'  => 2.0,
         ]);
     }
@@ -30,7 +31,7 @@ class Document
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents", [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -54,7 +55,7 @@ class Document
     public function get($customerId, $documentId)
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId", [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents/$documentId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -78,12 +79,12 @@ class Document
      */
     public function createAndUpload($customerId, $data)
     {
-        return $this->client->request('POST', env('SWIFTDIL_URL') . "/customers/$customerId/documents", [
+        return $this->client->request('POST', $this->url . "/customers/$customerId/documents", [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->token,
                 'Content-Type'  => 'application/json',
             ],
-            'json' => $data
+            'json'    => $data,
         ]);
     }
 
@@ -99,7 +100,7 @@ class Document
     public function download($customerId, $documentId, $side = '')
     {
         try {
-            $response = $this->client->request('GET', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId/download" . (($side !== '') ? '?side='.$side : ''), [
+            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents/$documentId/download" . (($side !== '') ? '?side=' . $side : ''), [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -127,11 +128,11 @@ class Document
     public function update($customerId, $documentId, $data)
     {
         try {
-            $response = $this->client->request('PUT', env('SWIFTDIL_URL') . "/customers/$customerId/documents/$documentId", [
+            $response = $this->client->request('PUT', $this->url . "/customers/$customerId/documents/$documentId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
-                'json' => $data
+                'json'    => $data,
             ]);
         } catch (\Exception $e) {
             $response = $e;

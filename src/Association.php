@@ -7,14 +7,15 @@ use GuzzleHttp\Client;
 class Association
 {
     protected $client;
+    protected $url;
     protected $token;
 
-    public function __construct($token)
+    public function __construct($url, $token)
     {
-        $this->token  = $token;
+        $this->url    = $url;
         $this->token  = $token;
         $this->client = new Client([
-            'base_uri' => env('SWIFTDIL_URL'),
+            'base_uri' => $url,
             'timeout'  => 2.0,
         ]);
     }
