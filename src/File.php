@@ -2,11 +2,13 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+
+use DogeDev\SwiftDil\Traits\Client;
 
 class File
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +16,6 @@ class File
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -31,7 +29,7 @@ class File
     public function create($fileId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/files/$fileId", [
+            $response = $this->getClient()->request('GET', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -52,7 +50,7 @@ class File
     public function getAll()
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/files", [
+            $response = $this->getClient()->request('GET', $this->url . "/files", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -76,7 +74,7 @@ class File
     public function download($fileId, $type)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/files/$fileId?output=$type", [
+            $response = $this->getClient()->request('GET', $this->url . "/files/$fileId?output=$type", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -101,7 +99,7 @@ class File
     public function update($fileId, $data)
     {
         try {
-            $response = $this->client->request('PUT', $this->url . "/files/$fileId", [
+            $response = $this->getClient()->request('PUT', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -128,7 +126,7 @@ class File
     public function delete($fileId)
     {
         try {
-            $response = $this->client->request('DELETE', $this->url . "/files/$fileId", [
+            $response = $this->getClient()->request('DELETE', $this->url . "/files/$fileId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

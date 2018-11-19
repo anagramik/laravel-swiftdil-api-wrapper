@@ -2,11 +2,13 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+
+use DogeDev\SwiftDil\Traits\Client;
 
 class DocumentVerification
 {
-    protected $client;
+    use Client;
+
     protected $token;
     protected $url;
 
@@ -14,10 +16,6 @@ class DocumentVerification
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -30,7 +28,7 @@ class DocumentVerification
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/verifications", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/verifications", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -55,7 +53,7 @@ class DocumentVerification
     public function get($customerId, $verificationId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/verifications/$verificationId", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/verifications/$verificationId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -78,7 +76,7 @@ class DocumentVerification
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/verifications" . [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/verifications" . [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $this->token,
                     ],

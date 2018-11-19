@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Note
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Note
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -31,7 +28,7 @@ class Note
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/notes", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -59,7 +56,7 @@ class Note
     public function get($customerId, $noteId)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes/$noteId", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -85,7 +82,7 @@ class Note
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/notes", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/notes", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -110,7 +107,7 @@ class Note
     public function update($customerId, $noteId, $data)
     {
         try {
-            $response = $this->client->request('PUT', $this->url . "/customers/$customerId/notes/$noteId", [
+            $response = $this->getClient()->request('PUT', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -138,7 +135,7 @@ class Note
     public function delete($customerId, $noteId)
     {
         try {
-            $response = $this->client->request('DELETE', $this->url . "/customers/$customerId/notes/$noteId", [
+            $response = $this->getClient()->request('DELETE', $this->url . "/customers/$customerId/notes/$noteId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

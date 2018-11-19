@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Screening
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Screening
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -31,7 +28,7 @@ class Screening
     public function create($customerId, $data)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/screenings", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -57,7 +54,7 @@ class Screening
     public function get($customerId, $screeningId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -80,7 +77,7 @@ class Screening
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/screenings", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -103,7 +100,7 @@ class Screening
     public function search($data)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/search/screenings?$data", [
+            $response = $this->getClient()->request('POST', $this->url . "/search/screenings?$data", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

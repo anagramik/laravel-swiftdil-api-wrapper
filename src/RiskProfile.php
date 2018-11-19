@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class RiskProfile
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class RiskProfile
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -30,7 +27,7 @@ class RiskProfile
     public function getCustomerRiskProfile($clientId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$clientId/risk_profile", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$clientId/risk_profile", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',

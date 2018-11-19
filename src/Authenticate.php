@@ -6,22 +6,15 @@ use GuzzleHttp\Client;
 
 class Authenticate
 {
-    /** @var \GuzzleHttp\Client */
-    protected $client;
     protected $url;
+    protected $clientId;
+    protected $clientSecret;
 
     public function __construct($clientId, $clientSecret, $url)
     {
-        $this->client = new Client([
-            'auth'    => [
-                $clientId, $clientSecret,
-            ],
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-        ]);
-
-        $this->url = $url;
+        $this->url          = $url;
+        $this->clientId     = $clientId;
+        $this->clientSecret = $clientSecret;
     }
 
     public function getToken()
@@ -120,5 +113,22 @@ class Authenticate
         }
 
         return $message;
+    }
+
+    /**
+     * Get a new instance of the Client model
+     *
+     * @return Client
+     */
+    private function getClient()
+    {
+        return new Client([
+            'auth'    => [
+                $this->clientId, $this->clientSecret,
+            ],
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
     }
 }

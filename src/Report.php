@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Report
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Report
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -31,7 +28,7 @@ class Report
     public function get($reportId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/reports/$reportId", [
+            $response = $this->getClient()->request('GET', $this->url . "/reports/$reportId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -54,7 +51,7 @@ class Report
     public function getAll()
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/reports", [
+            $response = $this->getClient()->request('GET', $this->url . "/reports", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -78,7 +75,7 @@ class Report
     public function download($reportId, $extension)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/reports/$reportId/$extension/download", [
+            $response = $this->getClient()->request('GET', $this->url . "/reports/$reportId/$extension/download", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

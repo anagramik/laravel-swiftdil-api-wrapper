@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Match
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Match
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -33,7 +30,7 @@ class Match
     public function get($customerId, $screeningId, $matchId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -57,7 +54,7 @@ class Match
     public function getAll($customerId, $screeningId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId/matches", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/screenings/$screeningId/matches", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -82,7 +79,7 @@ class Match
     public function confirm($customerId, $screeningId, $matchId)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId/confirm", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -107,7 +104,7 @@ class Match
     public function confirmMultiple($customerId, $screeningId, $matchIds)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/confirm", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/confirm", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -133,7 +130,7 @@ class Match
     public function dismiss($customerId, $screeningId, $matchId)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId/dismiss", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/$matchId/dismiss", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -158,7 +155,7 @@ class Match
     public function dismissMultiple($customerId, $screeningId, $matchIds)
     {
         try {
-            $response = $this->client->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/dismiss", [
+            $response = $this->getClient()->request('POST', $this->url . "/customers/$customerId/screenings/$screeningId/matches/dismiss", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

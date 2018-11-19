@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Customer
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Customer
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -29,7 +26,7 @@ class Customer
     public function getAll()
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -52,7 +49,7 @@ class Customer
     public function get($clientId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$clientId", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -74,7 +71,7 @@ class Customer
     public function create($data)
     {
         try {
-            $response = $this->client->request('POST', $this->url . '/customers', [
+            $response = $this->getClient()->request('POST', $this->url . '/customers', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -102,7 +99,7 @@ class Customer
     public function update($clientId, $data)
     {
         try {
-            $response = $this->client->request('PUT', $this->url . "/customers/$clientId", [
+            $response = $this->getClient()->request('PUT', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                     'Content-Type'  => 'application/json',
@@ -128,7 +125,7 @@ class Customer
     public function delete($clientId)
     {
         try {
-            $response = $this->client->request('DELETE', $this->url . "/customers/$clientId", [
+            $response = $this->getClient()->request('DELETE', $this->url . "/customers/$clientId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

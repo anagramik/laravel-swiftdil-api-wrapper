@@ -2,11 +2,12 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+use DogeDev\SwiftDil\Traits\Client;
 
 class Association
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +15,6 @@ class Association
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -34,7 +31,7 @@ class Association
     public function get($customerId, $screeningId, $matchId, $associationId)
     {
         try {
-            $response = $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations/$associationId", [
+            $response = $this->getClient()->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations/$associationId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -59,7 +56,7 @@ class Association
     public function getAll($customerId, $screeningId, $matchId)
     {
         try {
-            $response = $this->client->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations", [
+            $response = $this->getClient()->request('GET', "/customers/$customerId/screenings/$screeningId/matches/$matchId/associations", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],

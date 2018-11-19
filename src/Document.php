@@ -2,11 +2,13 @@
 
 namespace DogeDev\SwiftDil;
 
-use GuzzleHttp\Client;
+
+use DogeDev\SwiftDil\Traits\Client;
 
 class Document
 {
-    protected $client;
+    use Client;
+
     protected $url;
     protected $token;
 
@@ -14,10 +16,6 @@ class Document
     {
         $this->url    = $url;
         $this->token  = $token;
-        $this->client = new Client([
-            'base_uri' => $this->url,
-            'timeout'  => 2.0,
-        ]);
     }
 
     /**
@@ -31,7 +29,7 @@ class Document
     public function getAll($customerId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/documents", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -55,7 +53,7 @@ class Document
     public function get($customerId, $documentId)
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents/$documentId", [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/documents/$documentId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -79,7 +77,7 @@ class Document
      */
     public function createAndUpload($customerId, $data)
     {
-        return $this->client->request('POST', $this->url . "/customers/$customerId/documents", [
+        return $this->getClient()->request('POST', $this->url . "/customers/$customerId/documents", [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->token,
                 'Content-Type'  => 'application/json',
@@ -100,7 +98,7 @@ class Document
     public function download($customerId, $documentId, $side = '')
     {
         try {
-            $response = $this->client->request('GET', $this->url . "/customers/$customerId/documents/$documentId/download" . (($side !== '') ? '?side=' . $side : ''), [
+            $response = $this->getClient()->request('GET', $this->url . "/customers/$customerId/documents/$documentId/download" . (($side !== '') ? '?side=' . $side : ''), [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -128,7 +126,7 @@ class Document
     public function update($customerId, $documentId, $data)
     {
         try {
-            $response = $this->client->request('PUT', $this->url . "/customers/$customerId/documents/$documentId", [
+            $response = $this->getClient()->request('PUT', $this->url . "/customers/$customerId/documents/$documentId", [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
@@ -137,5 +135,7 @@ class Document
         } catch (\Exception $e) {
             $response = $e;
         }
+
+        return json_decode($response->getBody()->getContents());
     }
 }
