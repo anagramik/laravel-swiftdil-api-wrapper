@@ -3,6 +3,7 @@
 namespace DogeDev\SwiftDil;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class Authenticate
 {
@@ -34,7 +35,7 @@ class Authenticate
             \Cache::put('access_token', $response->access_token, $accessTokenExpiresAt);
             \Cache::put('refresh_token', $response->refresh_token, $refreshTokenExpiresAt);
 
-        } catch (\Exception $e) {
+        } catch (RequestException $e) {
 
             $code = $e->getCode();
 
